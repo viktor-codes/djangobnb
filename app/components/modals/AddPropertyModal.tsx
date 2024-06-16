@@ -10,6 +10,9 @@ import CustomButton from "../forms/CustomButton";
 import Categories from "../addproperty/Categories";
 import SelectCountry, { SelectCountryValue } from "../forms/SelectCountry";
 
+import apiService from "@/app/services/apiService";
+import { useRouter } from "next/navigation";
+
 const AddPropertyModal = () => {
     //
     // States
@@ -28,6 +31,7 @@ const AddPropertyModal = () => {
     //
     //
     const addPropertyModal = useAddPropertyModal();
+    const router = useRouter();
 
     //
     //Set datas
@@ -41,6 +45,45 @@ const AddPropertyModal = () => {
             const tempImage = event.target.files[0];
 
             setDataImage(tempImage);
+        }
+    };
+
+    //
+    // Submit
+
+    const submitForm = async () => {
+        console.log("submitForm");
+
+        if (
+            dataCategory &&
+            dataTitle &&
+            dataDescription &&
+            dataPrice &&
+            dataCountry &&
+            dataImage
+        ){
+            const formDatta = new FormData();
+            formDatta.append("category", dataCategory);
+            formDatta.append("title", dataTitle);
+            formDatta.append("description", dataDescription);
+            formDatta.append("price_per_night", dataPrice);
+            formDatta.append("bedrooms", dataBedrooms);
+            formDatta.append("bathrooms", dataBathrooms);
+            formDatta.append("guests", dataGuests);
+            formDatta.append("country", dataCountry.label);
+            formDatta.append("country_code", dataCountry.value);
+            formDatta.append("image", dataImage);
+
+            const response = await apiService.post("/api/properties/create/", formDatta);
+            
+            if (response.success) {
+                console.log("Property created successfully");
+                router.push("/")
+
+                addPropertyModal.close();
+            } else{
+                console.log("Error creating property");
+            }
         }
     };
 
