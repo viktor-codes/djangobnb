@@ -18,6 +18,7 @@ const AddPropertyModal = () => {
     // States
 
     const [currentStep, setCurrentStep] = useState(1);
+    const [errors, setErrors] = useState<string[]>([]);
     const [dataCategory, setDataCategory] = useState("");
     const [dataTitle, setDataTitle] = useState("");
     const [dataDescription, setDataDescription] = useState("");
@@ -74,28 +75,25 @@ const AddPropertyModal = () => {
             formData.append("category", dataCategory);
             formData.append("image", dataImage);
 
-            try {
-                const response = await apiService.post(
-                    "/api/properties/create/",
-                    formData
-                );
+            
+            const response = await apiService.post(
+                "/api/properties/create/",
+                formData
+            );
 
-                if (response.success) {
-                    console.log("Property created successfully");
-                    router.push("/");
-                    addPropertyModal.close();
-                } else {
-                    console.log("Error creating property");
-                    // Handle any error messages from the response
-                    if (response.errors) {
-                        console.error("Errors:", response.errors);
-                    }
-                }
-            } catch (error) {
-                console.error("Error creating property:", error);
-            }
-        } else {
-            console.log("All fields are required");
+            if (response.success) {
+                console.log("Property created successfully");
+                router.push("/");
+                addPropertyModal.close();
+            } else {
+                console.log("Error creating property");
+                const tmpErrors: string[] = Object.values(response).map((error: any) => {
+                    return error
+                })
+                setErrors(tmpErrors);
+                
+            } 
+
         }
     };
 
@@ -254,15 +252,25 @@ const AddPropertyModal = () => {
                             </div>
                         )}
                     </div>
+
+                    {errors.map((error, index) => {
+                        return (
+                            <div
+                                key={index}
+                                className="p-5 mb-4 bg-airbnb text-white rounded-xl opacity-80"
+                            >
+                                {error}
+                            </div>
+                        );
+                    })}
+                    
                     <CustomButton
                         label="previous"
                         className="mb-2 bg-black hover:bg-gray-800"
                         onClick={() => setCurrentStep(4)}
                     />
-                    <CustomButton
-                        label="Submit"
-                        onClick={submitForm}
-                    />
+
+                    <CustomButton label="Submit" onClick={submitForm} />
                 </>
             )}
         </>
