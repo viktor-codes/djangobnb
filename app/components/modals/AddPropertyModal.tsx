@@ -61,31 +61,44 @@ const AddPropertyModal = () => {
             dataPrice &&
             dataCountry &&
             dataImage
-        ){
-            const formDatta = new FormData();
-            formDatta.append("category", dataCategory);
-            formDatta.append("title", dataTitle);
-            formDatta.append("description", dataDescription);
-            formDatta.append("price_per_night", dataPrice);
-            formDatta.append("bedrooms", dataBedrooms);
-            formDatta.append("bathrooms", dataBathrooms);
-            formDatta.append("guests", dataGuests);
-            formDatta.append("country", dataCountry.label);
-            formDatta.append("country_code", dataCountry.value);
-            formDatta.append("image", dataImage);
+        ) {
+            const formData = new FormData();
+            formData.append("title", dataTitle);
+            formData.append("description", dataDescription);
+            formData.append("price_per_night", dataPrice);
+            formData.append("bedrooms", dataBedrooms);
+            formData.append("bathrooms", dataBathrooms);
+            formData.append("guests", dataGuests);
+            formData.append("country", dataCountry.label);
+            formData.append("country_code", dataCountry.value);
+            formData.append("category", dataCategory);
+            formData.append("image", dataImage);
 
-            const response = await apiService.post("/api/properties/create/", formDatta);
-            
-            if (response.success) {
-                console.log("Property created successfully");
-                router.push("/")
+            try {
+                const response = await apiService.post(
+                    "/api/properties/create/",
+                    formData
+                );
 
-                addPropertyModal.close();
-            } else{
-                console.log("Error creating property");
+                if (response.success) {
+                    console.log("Property created successfully");
+                    router.push("/");
+                    addPropertyModal.close();
+                } else {
+                    console.log("Error creating property");
+                    // Handle any error messages from the response
+                    if (response.errors) {
+                        console.error("Errors:", response.errors);
+                    }
+                }
+            } catch (error) {
+                console.error("Error creating property:", error);
             }
+        } else {
+            console.log("All fields are required");
         }
     };
+
 
     const content = (
         <>
@@ -248,7 +261,7 @@ const AddPropertyModal = () => {
                     />
                     <CustomButton
                         label="Submit"
-                        onClick={() => console.log("submit")}
+                        onClick={submitForm}
                     />
                 </>
             )}
