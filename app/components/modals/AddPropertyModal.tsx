@@ -23,6 +23,7 @@ const AddPropertyModal = () => {
     const [dataBathrooms, setDataBathrooms] = useState("");
     const [dataGuests, setDataGuests] = useState("");
     const [dataCountry, setDataCountry] = useState<SelectCountryValue>();
+    const [dataImage, setDataImage] = useState<File | null>(null);
 
     //
     //
@@ -33,6 +34,14 @@ const AddPropertyModal = () => {
 
     const setCategory = (category: string) => {
         setDataCategory(category);
+    };
+
+    const setImage = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files && event.target.files.length > 0) {
+            const tempImage = event.target.files[0];
+
+            setDataImage(tempImage);
+        }
     };
 
     const content = (
@@ -151,8 +160,10 @@ const AddPropertyModal = () => {
                     <div className="pt-3 pb-6 space-y-4">
                         <SelectCountry
                             value={dataCountry}
-                            onChange={(value) => setDataCountry(value as SelectCountryValue)}
-                        /> 
+                            onChange={(value) =>
+                                setDataCountry(value as SelectCountryValue)
+                            }
+                        />
                     </div>
                     <CustomButton
                         label="previous"
@@ -166,7 +177,36 @@ const AddPropertyModal = () => {
                 </>
             ) : (
                 <>
-                    <h2 className="mb-6 text-2xl">else</h2>
+                    <h2 className="mb-6 text-2xl">Image</h2>
+                    <div className="pt-3 pb-6 space-y-4">
+                        <div className="py-4 px-6 bg-gray-600 text-white rounded-xl">
+                            <input
+                                accept="image/*"
+                                type="file"
+                                onChange={setImage}
+                            />
+                        </div>
+
+                        {dataImage && (
+                            <div className="w-[200px] h-[150px] relative">
+                                <Image
+                                    fill
+                                    alt="Uploaded image"
+                                    src={URL.createObjectURL(dataImage)}
+                                    className="w-full object-cover rounded-xl"
+                                />
+                            </div>
+                        )}
+                    </div>
+                    <CustomButton
+                        label="previous"
+                        className="mb-2 bg-black hover:bg-gray-800"
+                        onClick={() => setCurrentStep(4)}
+                    />
+                    <CustomButton
+                        label="Submit"
+                        onClick={() => console.log("submit")}
+                    />
                 </>
             )}
         </>
