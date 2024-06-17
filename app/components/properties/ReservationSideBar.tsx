@@ -7,6 +7,7 @@ import { differenceInDays, eachDayOfInterval } from "date-fns";
 
 import apiService from "@/app/services/apiService";
 import useLoginModal from "@/app/hooks/useLoginModal";
+import DatePicker from "../forms/Calendar";
 
 const initialDateRange = {
     startDate: new Date(),
@@ -36,6 +37,22 @@ const ReservationSideBar: React.FC<ReservationSideBarProps> = ({property, userId
     const [guests, setGuests] = useState<string>("1");
     const guestsRange = Array.from({length: property.guests}, (_, i) => (i + 1));
 
+    const _setDateRange =(selection: any) => {
+        const newStartDate = new Date(selection.startDate);
+        const newEndDate = new Date(selection.endDate);
+
+        if (newEndDate <= newStartDate) {
+            newEndDate.setDate(newStartDate.getDate() + 1);
+        }
+
+        setDateRange({
+            ...dateRange,
+            startDate: newStartDate,
+            endDate: newEndDate,
+        })
+    }
+
+
     useEffect(() =>{
         if (dateRange.startDate && dateRange.endDate) {
             const dayCount = differenceInDays(dateRange.endDate, dateRange.startDate);
@@ -59,6 +76,12 @@ const ReservationSideBar: React.FC<ReservationSideBarProps> = ({property, userId
             <h2 className="mb-5 text-xxl">
                 ${property.price_per_night} per night
             </h2>
+
+            <DatePicker
+                value={dateRange}
+                onChange={(value) => _setDateRange(value.selection)}
+                bookedDates={[]}
+            />
 
             <div className="mb-6 p-3 border border-gray-400 rounded-xl">
                 <label htmlFor=" " className="mb-2 block font-bold text-xs">
