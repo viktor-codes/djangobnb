@@ -10,7 +10,7 @@ interface UserNavProps {
     userId?: string | null;
 }
 
-const UserNav: React.FC<UserNavProps> = ({userId}) => {
+const UserNav: React.FC<UserNavProps> = ({ userId }) => {
     const router = useRouter();
     const loginModal = useLoginModal();
     const signupModal = useSignupModal();
@@ -55,7 +55,20 @@ const UserNav: React.FC<UserNavProps> = ({userId}) => {
                 <div className="w-[220px] absolute top-[60px] right-0 bg-white border rounded-xl shadow-md flex flex-col cursor-pointer">
                     {userId ? (
                         <>
-                            <MenuLink label="My Properties" onClick={() => {setIsOpen(false); router.push("/myproperties/");}} />
+                            <MenuLink
+                                label="My Properties"
+                                onClick={() => {
+                                    setIsOpen(false);
+                                    router.push("/myproperties/");
+                                }}
+                            />
+                            <MenuLink
+                                label="My Reservations"
+                                onClick={() => {
+                                    setIsOpen(false);
+                                    router.push("/myreservations/");
+                                }}
+                            />
                             <LogoutButton />
                         </>
                     ) : (
@@ -65,7 +78,6 @@ const UserNav: React.FC<UserNavProps> = ({userId}) => {
                                 onClick={() => {
                                     loginModal.open();
                                     setIsOpen(false);
-                                    
                                 }}
                             />
                             <MenuLink
