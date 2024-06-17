@@ -8,7 +8,7 @@ interface MenuLinkProps {
 const MenuLink: React.FC<MenuLinkProps> = ({ label, onClick }) => {
     return (
         <div
-            className="px-5 py-4 hover:bg-gray-100 cursor-pointer transition"
+            className="px-5 py-4 hover:bg-gray-100 cursor-pointer rounded-xl transition"
             onClick={onClick}
         >
             {label}

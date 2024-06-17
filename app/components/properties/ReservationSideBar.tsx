@@ -3,6 +3,8 @@
 import {useState, useEffect} from "react";
 import { Range } from "react-date-range";
 
+import { differenceInDays, eachDayOfInterval } from "date-fns";
+
 import apiService from "@/app/services/apiService";
 import useLoginModal from "@/app/hooks/useLoginModal";
 
@@ -34,9 +36,29 @@ const ReservationSideBar: React.FC<ReservationSideBarProps> = ({property, userId
     const [guests, setGuests] = useState<string>("1");
     const guestsRange = Array.from({length: property.guests}, (_, i) => (i + 1));
 
+    useEffect(() =>{
+        if (dateRange.startDate && dateRange.endDate) {
+            const dayCount = differenceInDays(dateRange.endDate, dateRange.startDate);
+            if (dayCount && property.price_per_night) {
+                const _fee = ((dayCount * property.price_per_night) / 100) * 5; 
+                setFee(_fee);
+                setTotalPrice((dayCount * property.price_per_night) + _fee);
+                setNights(dayCount);
+            } else {
+                const _fee = (property.price_per_night / 100) * 5;
+
+                setFee(_fee);
+                setTotalPrice(property.price_per_night + _fee);
+                setNights(1);
+            }
+        }
+    }, [dateRange])
+
     return (
         <aside className="mt-6 p-6 col-span-2 rounded-xl border border-gray-300 shadow-xl">
-            <h2 className="mb-5 text-xxl">${property.price_per_night} per night</h2>
+            <h2 className="mb-5 text-xxl">
+                ${property.price_per_night} per night
+            </h2>
 
             <div className="mb-6 p-3 border border-gray-400 rounded-xl">
                 <label htmlFor=" " className="mb-2 block font-bold text-xs">
@@ -60,17 +82,21 @@ const ReservationSideBar: React.FC<ReservationSideBarProps> = ({property, userId
             </div>
 
             <div className="mb-4 flex justify-between alighn-center">
-                <p>$200 * 4 nights</p>
-                <p>$800</p>
+                <p>
+                    {property.price_per_night} * {nights} nights
+                </p>
+                <p>
+                    ${property.price_per_night * nights}
+                </p>
             </div>
             <div className="mt-4 flex justify-between alighn-center">
                 <p>DjangoBnb fee</p>
-                <p>$40</p>
+                <p>${fee}</p>
             </div>
             <hr />
             <div className="mt-4 flex justify-between alighn-center font-bold">
                 <p>Total</p>
-                <p>$840</p>
+                <p>${totalPrice}</p>
             </div>
         </aside>
     );
