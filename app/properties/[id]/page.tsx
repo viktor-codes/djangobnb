@@ -35,7 +35,7 @@ const PropertyDetailPage = async ({ params }: { params: { id: string } }) => {
                     className="py-6 flex items-center space-x-4">
                         {property.landlord.avatar_url && (
                             <Image
-                                src="/profile_pic_1.jpg"
+                                src={property.landlord.avatar_url}
                                 alt="Profile picture"
                                 width={50}
                                 height={50}
@@ -44,7 +44,7 @@ const PropertyDetailPage = async ({ params }: { params: { id: string } }) => {
                         )}
 
                         <p>
-                            <strong>{property.landlord.name}</strong>is your
+                            <strong>{property.landlord.name}</strong> is your
                             host
                         </p>
                     </Link>
