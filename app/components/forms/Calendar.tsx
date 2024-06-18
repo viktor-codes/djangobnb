@@ -8,10 +8,14 @@ import "react-date-range/dist/theme/default.css";
 interface DatePickerProps {
     value: Range;
     onChange: (value: RangeKeyDict) => void;
-    bookedDates: Date[];
+    bookedDates?: Date[];
 }
 
-const DatePicker: React.FC<DatePickerProps> = ({ value, onChange, bookedDates }) => {
+const DatePicker: React.FC<DatePickerProps> = ({
+    value,
+    onChange,
+    bookedDates,
+}) => {
     return (
         <DateRange
             className="w-full border border-gray-400 rounded-xl mb-4"
@@ -21,11 +25,10 @@ const DatePicker: React.FC<DatePickerProps> = ({ value, onChange, bookedDates })
             onChange={onChange}
             direction="vertical"
             showDateDisplay={false}
-            moveRangeOnFirstSelection={false}
             minDate={new Date()}
             disabledDates={bookedDates}
         />
     );
-}
+};
 
 export default DatePicker;
