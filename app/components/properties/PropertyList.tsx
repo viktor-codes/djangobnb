@@ -1,6 +1,5 @@
 "use client";
 
-
 import apiService from "@/app/services/apiService";
 import { useState, useEffect, use } from "react";
 import PropertyListItem from "./PropertyListItem";
@@ -11,15 +10,17 @@ export type PropertyType = {
     price_per_night: number;
     image_url: string;
     is_favorite: boolean;
-    
 };
 
-interface PropertyListProps{
+interface PropertyListProps {
     landlord_id?: string | null;
-
+    favorites?: boolean | null;
 }
 
-const PropertyList: React.FC<PropertyListProps> = ({landlord_id}) => {
+const PropertyList: React.FC<PropertyListProps> = ({
+    landlord_id,
+    favorites, 
+}) => {
     const [properties, setProperties] = useState<PropertyType[]>([]);
 
     const markFavorite = (id: string, is_favorite: boolean) => {
@@ -44,10 +45,12 @@ const PropertyList: React.FC<PropertyListProps> = ({landlord_id}) => {
 
         if (landlord_id) {
             url += `?landlord_id=${landlord_id}`;
+        } else if (favorites) {
+            url += `?is_favorites=true`;
         }
 
         const tmpProperties = await apiService.get(url);
-        
+
         setProperties(
             tmpProperties.data.map((property: PropertyType) => {
                 if (tmpProperties.favorites.includes(property.id)) {
